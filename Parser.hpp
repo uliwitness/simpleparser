@@ -21,6 +21,8 @@ namespace simpleparser {
 
         void debugPrint() const;
 
+        map<string, FunctionDefinition> GetFunctions() const { return mFunctions; }
+
     private:
         optional<Type> expectType();
 
