@@ -12,10 +12,11 @@ namespace simpleparser {
 
     static map<string, OperatorEntry> sOperators{
         // precedence 0 is reserved for "no operator".
-        {"+", OperatorEntry{"+", 1}},
-        {"-", OperatorEntry{"-", 1}},
-        {"/", OperatorEntry{"/", 10}},
-        {"*", OperatorEntry{"*", 10}}
+        {"=", OperatorEntry{"=", 1}},
+        {"+", OperatorEntry{"+", 10}},
+        {"-", OperatorEntry{"-", 10}},
+        {"/", OperatorEntry{"/", 50}},
+        {"*", OperatorEntry{"*", 50}}
     };
 
     bool Parser::expectFunctionDefinition() {
@@ -144,7 +145,8 @@ namespace simpleparser {
             }
 
             if (!expectOperator(";").has_value()) {
-                throw runtime_error("Expected ';' at end of statement.");
+                size_t lineNo = (mCurrentToken != mEndToken) ? mCurrentToken->mLineNumber : 999999;
+                throw runtime_error(string("Expected ';' at end of statement in line ") + to_string(lineNo) + ".");
             }
         }
 
@@ -159,6 +161,8 @@ namespace simpleparser {
 
     optional<Statement> Parser::expectOneValue() {
         optional<Statement> result;
+        auto savedToken = mCurrentToken;
+
         if (mCurrentToken != mEndToken && mCurrentToken->mType == DOUBLE_LITERAL) {
             Statement doubleLiteralStatement;
             doubleLiteralStatement.mKind = StatementKind::LITERAL;
@@ -184,6 +188,15 @@ namespace simpleparser {
             result = expectExpression();
             if (!expectOperator(")").has_value()) {
                 throw runtime_error("Unbalanced '(' in parenthesized expression.");
+            }
+        } else if (auto variableName = expectIdentifier()) {
+            if (expectOperator("(")) {
+                mCurrentToken = savedToken;
+            } else {
+                Statement variableNameStatement;
+                variableNameStatement.mKind = StatementKind::VARIABLE_NAME;
+                variableNameStatement.mName = variableName->mText;
+                result = variableNameStatement;
             }
         }
         if (!result.has_value()) {
@@ -262,9 +275,9 @@ namespace simpleparser {
     }
 
     optional<Statement> Parser::expectStatement() {
-        optional<Statement> result = expectExpression();
+        optional<Statement> result = expectVariableDeclaration();
         if (!result.has_value()) {
-            result = expectVariableDeclaration();
+            result = expectExpression();
         }
         return result;
     }

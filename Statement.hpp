@@ -12,14 +12,16 @@ namespace simpleparser {
         VARIABLE_DECLARATION,
         FUNCTION_CALL,
         LITERAL,
-        OPERATOR_CALL
+        OPERATOR_CALL,
+        VARIABLE_NAME
     };
 
     static const char* sStatementKindStrings[] = {
         "VARIABLE_DECLARATION",
         "FUNCTION_CALL",
         "LITERAL",
-        "OPERATOR_CALL"
+        "OPERATOR_CALL",
+        "VARIABLE_NAME"
     };
 
     class Statement {
