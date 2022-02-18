@@ -43,6 +43,8 @@ namespace simpleparser {
 
         optional<Statement> expectOneValue();
 
+        optional<Statement> expectWhileLoop();
+
         optional<Statement> expectStatement();
 
         optional<Statement> expectVariableDeclaration();
