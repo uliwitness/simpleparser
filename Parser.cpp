@@ -32,6 +32,7 @@ namespace simpleparser {
                 if (possibleOperator.has_value()) { // We have a function!
 
                     FunctionDefinition func;
+                    func.mReturnsSomething = possibleType->mName != "void";
                     func.mName = possibleName->mText;
 
                     while(!expectOperator(")").has_value()) {

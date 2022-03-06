@@ -6,7 +6,7 @@ namespace simpleparser {
     using namespace std;
 
     void FunctionDefinition::debugPrint() const {
-        cout << mName << "(\n";
+        cout << (mReturnsSomething ? "int " : "void ") << mName << "(\n";
 
         for (ParameterDefinition param : mParameters) {
             param.debugPrint(1);

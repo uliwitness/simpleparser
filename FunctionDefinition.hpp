@@ -22,6 +22,7 @@ namespace simpleparser {
         string mName;
         vector<ParameterDefinition> mParameters;
         vector<Statement> mStatements;
+        bool mReturnsSomething;
 
         void debugPrint() const;
     };
